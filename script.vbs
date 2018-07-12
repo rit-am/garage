@@ -1,5 +1,5 @@
 'usage  script.vbs 1dc-lan-userid 1dc-lan-password JIRA-SDLC-FilterID
-'usage  script.vbs mukherri Ineed@job2018 18317 dsr_xlsm
+'usage  script.vbs mukherri n0tmyp@$$w0rd 18317 dsr_xlsm
 
 Option Explicit
 Dim User_ID,User_Pass,Filter_ID
