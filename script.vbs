@@ -1,13 +1,10 @@
-'usage  script.vbs 1dc-lan-userid 1dc-lan-password JIRA-SDLC-FilterID
-'usage  script.vbs validuserid n0tmyp@$$w0rd 18317 dsr_xlsm
-
+'usage  script.vbs JIRAuserID JIRApassword JIRAfilterId outbound_xls
 Option Explicit
 Dim User_ID,User_Pass,Filter_ID
 Dim File_Save_Path,File_Save_Name,Download_File,URL,url_POST,url_GET,POST,RequestHeader,ContentType,staticEXTNhtml,staticEXTNxls,staticEXTNxlsm
 Dim nTables, table, TableData, Elem, Count_Table, Count_Table_Row, Count_Table_Header
-Dim fileExcel, objExcel, strExcelPath, objSheet
-dim i,j
-Wsh.Echo ("Web File Processing")
+Dim fileExcel, objExcel, strExcelPath, objSheet, i,j
+Wsh.Echo ("Init()")
 User_ID=WScript.Arguments.Item(0):User_Pass=WScript.Arguments.Item(1):Filter_ID=WScript.Arguments.Item(2):fileExcel=WScript.Arguments.Item(3)
 staticEXTNhtml=".html":staticEXTNxls=".xls":staticEXTNxlsm=".xlsm"
 Dim scriptdir:scriptdir=CreateObject("Scripting.FileSystemObject").GetParentFolderName(WScript.ScriptFullName)
@@ -20,9 +17,7 @@ RequestHeader="":ContentType="application/x-www-form-urlencoded"
 Set objExcel = CreateObject("Excel.Application"):objExcel.WorkBooks.Open strExcelPath:Set objSheet = objExcel.ActiveWorkbook.Worksheets("general_report")
 strExcelPath = File_Save_Path+"dsr_xlsm"+staticEXTNxlsm
 For i = objSheet.UsedRange.Row+3 to objSheet.UsedRange.Rows.Count
-	For j = objSheet.UsedRange.Column to objSheet.UsedRange.Columns.Count
-		objSheet.Cells(i, j).Value = ""
-	Next
+	For j = objSheet.UsedRange.Column to objSheet.UsedRange.Columns.Count:objSheet.Cells(i, j).Value = "":Next
 Next
 dim xHttp:Set xHttp=createobject("Microsoft.XMLHTTP")
 With xHttp
@@ -40,10 +35,7 @@ With ie:.Navigate Download_File:Do until .ReadyState=4:WScript.Sleep 50:Loop
 			For Each Elem in table.GetElementsByTagName("TH"):Count_Table_Header=Count_Table_Header+1:Next
 			if(Count_Table_Header<>0)then
 				for i=0to Count_Table_Row-1
-					for j=0 to Count_Table_Header-1
-						objSheet.Cells(i+4, j+1).Value = table.rows(i).cells(j).innerText
-					next
-					TableData=TableData&vbNewLine&vbNewLine
+					for j=0 to Count_Table_Header-1:objSheet.Cells(i+4, j+1).Value = table.rows(i).cells(j).innerText:next
 				next
 			end if
 		next
@@ -51,4 +43,4 @@ With ie:.Navigate Download_File:Do until .ReadyState=4:WScript.Sleep 50:Loop
 End With
 objExcel.ActiveWorkbook.Save:objExcel.ActiveWorkbook.Close:objExcel.Application.Quit
 Set ie=Nothing:Set theTables=Nothing:Set objSheet=Nothing: Set objExcel=Nothing
-Wsh.Echo ("Web File Processed")
+Wsh.Echo ("Exit()")
